@@ -1,41 +1,43 @@
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import "./LoginForm.css"; // Ensure the CSS file path is correct.
+import "./LoginForm.css"; // Make sure this path is correct to apply styles
 
-// Define the structure of your expected error response
-interface ErrorResponse {
-  message: string;
+interface LoginResponse {
+  success: boolean;
+  message?: string;
 }
 
 function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/login", {
-        username,
-        password,
-      });
+      const response = await axios.post<LoginResponse>(
+        "http://localhost:5000/api/login",
+        {
+          username,
+          password,
+        }
+      );
       if (response.data.success) {
         navigate("/dashboard"); // Adjust the redirect path as necessary.
       } else {
-        setErrorMessage("Invalid username or password");
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        // You can now safely access the 'message' property since you've defined the structure.
-        const serverError = error.response?.data as ErrorResponse;
         setErrorMessage(
-          serverError?.message || "An error occurred during login"
+          response.data.message || "Invalid username or password"
         );
-      } else {
-        setErrorMessage("An error occurred during login");
       }
+    } catch (error) {
+      let message = "An error occurred during login"; // Default error message
+      if (axios.isAxiosError(error)) {
+        const serverError = error as AxiosError<LoginResponse>;
+        message = serverError.response?.data.message || message;
+      }
+      setErrorMessage(message);
     }
   };
 

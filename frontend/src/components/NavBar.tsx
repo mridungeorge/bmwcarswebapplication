@@ -4,17 +4,6 @@ import { Link } from "react-router-dom";
 const NavBar = () => {
   return (
     <nav>
-      {/* Other navigation links */}
-      <Link to="/register">Register</Link>
-    </nav>
-  );
-};
-
-export default NavBar;
-
-const NavBar = () => {
-  return (
-    <nav>
       <ul>
         <li>
           <Link to="/">Home</Link>
@@ -26,8 +15,12 @@ const NavBar = () => {
           <Link to="/contact">Contact</Link>
         </li>
         <li>
-          <Link to="/login">Login</Link> {/* Add Login link */}
+          <Link to="/login">Login</Link>
         </li>
+        <li>
+          <Link to="/register">Register</Link>
+        </li>{" "}
+        {/* Add Register link if not present */}
       </ul>
     </nav>
   );
