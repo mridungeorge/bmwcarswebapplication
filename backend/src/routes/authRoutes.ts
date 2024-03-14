@@ -23,7 +23,12 @@ router.post('/login', async (req, res) => {
       res.json({ success: false, message: "Invalid username or password" });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+    // Improved error handling
+    if (error instanceof Error) {
+      res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+    } else {
+      res.status(500).json({ success: false, message: "An unknown error occurred" });
+    }
   }
 });
 
